@@ -5,19 +5,13 @@ import java.util.*;
 
 public class Main {
 
-    private static List<String> items = new ArrayList<>();
     private static List<String> members = new ArrayList<>();
-
-    private static String itemsFile = "data/items.txt";
-    private static String membersFile = "data/items.txt";
+    private static String membersFile = "data/members.txt";
 
     public static void main(String[] args) {
         System.out.println("Hello World by InCTRL.dev");
 
-        readFile(itemsFile, items);
         readFile(membersFile, members);
-
-        saveToFile(itemsFile, items);
         saveToFile(membersFile, members);
 
     }
