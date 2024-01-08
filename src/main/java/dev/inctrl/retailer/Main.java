@@ -24,7 +24,9 @@ public class Main {
         sc.nextLine();
 
         System.out.println("\nThe price of the item is based on the ID's prefix. Here the list");
-        System.out.println("A: RM 70\nB: RM 55\nC: RM 35\nD: RM 20\n");
+        System.out.println("A: RM 70\nB: RM 55\nC: RM 35\nD: RM 20");
+        System.out.println("The format should [category:3 digit code]");
+        System.out.println("e.g. A231 or C213\n");
 
         String[] items = new String[amount];
 
@@ -43,11 +45,38 @@ public class Main {
         members.add(String.format("Name: %s, Member: %s", name, isMember ? "Yes" : "No"));
         saveToFile(membersFile, members);
 
-        System.out.println("\nHere is your reciept.");
-        calcTotalPrice(items);
+        System.out.println("\nHere is your items list.");
+        double totalPrice = calcTotalPrice(items);
+
+        discount(totalPrice, isMember);
+        System.out.printf("Total Price: RM %.2f%n", totalPrice);
+
     }
 
-    private static void calcTotalPrice(String[] items) {
+    private static double discount(double totalPrice, boolean isMember) {
+
+        // if (isMember) {
+
+        // }
+
+        double discountPercent = 0;
+
+        if (totalPrice >= 200) {
+            if (isMember) {
+                discountPercent = .1;
+            }
+        } else if (totalPrice >= 100) {
+            if (isMember) {
+                discountPercent = .05;
+            }
+        } else {
+            discountPercent = 0;
+        }
+
+        return discountPercent;
+    }
+
+    private static double calcTotalPrice(String[] items) {
         double totalPrice = 0;
         for (int i = 0; i < items.length; i++) {
             double price = 0;
@@ -69,11 +98,11 @@ public class Main {
             System.out.printf("%s: %.2f%n", currentItem, price);
         }
 
-        System.out.printf("Total Price: RM %.2f%n", totalPrice);
+        return totalPrice;
     }
 
     // private static String getMember(String name) {
-        
+
     // }
 
     private static void saveToFile(String filePath, List<String> data) {
@@ -90,16 +119,8 @@ public class Main {
         }
     }
 
-    public static String readFile(String fileName, List<String> list) {
-        StringBuilder content = new StringBuilder();
-
+    public static void readFile(String fileName, List<String> list) {
         try {
-            File file = new File(fileName);
-
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             String line;
             while ((line = br.readLine()) != null) {
@@ -111,7 +132,6 @@ public class Main {
             System.exit(1);
         }
 
-        return content.toString();
     }
 
 }
