@@ -1,14 +1,16 @@
 package dev.inctrl.retailer;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
 
-    private static List<String> reciepts = new ArrayList<>();
-    private static String recieptsFile = "reciepts.txt";
+    private static final List<String> reciepts = new ArrayList<>();
+    private static final String recieptsFile = "reciepts.txt";
 
-    private static String[][] itemData = {
+    private static final String[][] itemData = {
             { "A", "70.0" },
             { "B", "55.0" },
             { "C", "35.0" },
@@ -64,9 +66,9 @@ public class Main {
 
     private static String generateReciept(String name, boolean isMember, String[] items) {
         String reciept = String.format("Reciept created for %s [%s]:%n", name, isMember ? "Member" : "Not Member");
+        reciept += String.format("Created on %s%n", getDate());
 
-        for (int i = 0; i < items.length; i++) {
-            String currentItem = items[i];
+        for (String currentItem : items) {
             String id = currentItem.split(" ")[0].replace("[", "").replace("]", "");
             double price = getItemPrice(id);
             reciept += String.format("%s: %.2f%n", currentItem, price);
@@ -78,6 +80,15 @@ public class Main {
         reciept += "\n";
 
         return reciept;
+    }
+
+    private static String getDate() {
+        LocalDateTime current = LocalDateTime.now();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formatted = current.format(formatter);
+
+        return formatted;
     }
 
     private static double discount(double totalPrice, boolean isMember) {
@@ -104,8 +115,7 @@ public class Main {
 
     private static double calcTotalPrice(String[] items, boolean printList) {
         double totalPrice = 0;
-        for (int i = 0; i < items.length; i++) {
-            String currentItem = items[i];
+        for (String currentItem : items) {
             String id = currentItem.split(" ")[0].replace("[", "").replace("]", "");
             id = id.toLowerCase();
 
@@ -124,8 +134,7 @@ public class Main {
         double price = 0;
         id = id.toLowerCase();
 
-        for (int i = 0; i < itemData.length; i++) {
-            String[] item = itemData[i];
+        for (String[] item : itemData) {
             if (id.startsWith(item[0].toLowerCase())) {
                 price = Double.parseDouble(item[1]);
                 break;
