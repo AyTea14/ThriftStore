@@ -8,6 +8,13 @@ public class Main {
     private static List<String> reciepts = new ArrayList<>();
     private static String recieptsFile = "reciepts.txt";
 
+    private static String[][] itemData = {
+            { "A", "70.0" },
+            { "B", "55.0" },
+            { "C", "35.0" },
+            { "D", "20.0" }
+    };
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -117,14 +124,12 @@ public class Main {
         double price = 0;
         id = id.toLowerCase();
 
-        if (id.startsWith("a")) {
-            price = 70.0;
-        } else if (id.startsWith("b")) {
-            price = 55.0;
-        } else if (id.startsWith("c")) {
-            price = 35.0;
-        } else if (id.startsWith("d")) {
-            price = 20.0;
+        for (int i = 0; i < itemData.length; i++) {
+            String[] item = itemData[i];
+            if (id.startsWith(item[0].toLowerCase())) {
+                price = Double.parseDouble(item[1]);
+                break;
+            }
         }
 
         return price;
