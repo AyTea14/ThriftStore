@@ -6,7 +6,7 @@ import java.util.*;
 public class Main {
 
     private static List<String> reciepts = new ArrayList<>();
-    private static String recieptsFile = "data/reciepts.txt";
+    private static String recieptsFile = "reciepts.txt";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -56,7 +56,7 @@ public class Main {
     }
 
     private static String generateReciept(String name, boolean isMember, String[] items) {
-        String reciept = "Reciept for " + name + ": \n";
+        String reciept = String.format("Reciept created for %s [%s]:%n", name, isMember ? "Member" : "Not Member");
 
         for (int i = 0; i < items.length; i++) {
             String currentItem = items[i];
