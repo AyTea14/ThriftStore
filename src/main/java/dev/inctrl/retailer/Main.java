@@ -20,7 +20,7 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("Welcome to In CTRL Store.");
+        System.out.println("Welcome to Thrifty Thirty Store.");
         System.out.println("Now enter all the required informations.");
         System.out.print("Name: ");
         String name = sc.nextLine();
