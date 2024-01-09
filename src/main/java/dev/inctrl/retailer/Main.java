@@ -5,12 +5,10 @@ import java.util.*;
 
 public class Main {
 
-    private static List<String> members = new ArrayList<>();
-    private static String membersFile = "data/members.txt";
+    private static List<String> reciepts = new ArrayList<>();
+    private static String recieptsFile = "data/reciepts.txt";
 
     public static void main(String[] args) {
-        System.out.println("Hello World by InCTRL.dev");
-
         Scanner sc = new Scanner(System.in);
 
         System.out.println("Welcome to In CTRL Store.");
@@ -23,10 +21,7 @@ public class Main {
         int amount = sc.nextInt();
         sc.nextLine();
 
-        System.out.println("\nThe price of the item is based on the ID's prefix. Here the list");
-        System.out.println("A: RM 70\nB: RM 55\nC: RM 35\nD: RM 20");
-        System.out.println("The format should [category:3 digit code]");
-        System.out.println("e.g. A231 or C213\n");
+        printList();
 
         String[] items = new String[amount];
 
@@ -41,33 +36,57 @@ public class Main {
         }
         sc.close();
 
-        readFile(membersFile, members);
-        members.add(String.format("Name: %s, Member: %s", name, isMember ? "Yes" : "No"));
-        saveToFile(membersFile, members);
-
         System.out.println("\nHere is your items list.");
-        double totalPrice = calcTotalPrice(items);
+        double totalPrice = calcTotalPrice(items, true);
 
-        discount(totalPrice, isMember);
-        System.out.printf("Total Price: RM %.2f%n", totalPrice);
+        double finalPrice = totalPrice - (totalPrice * discount(totalPrice, isMember));
+        System.out.printf("Total Price: RM %.2f%n", finalPrice);
+
+        readFile(recieptsFile, reciepts);
+        reciepts.add(generateReciept(name, isMember, items));
+        saveToFile(recieptsFile, reciepts);
 
     }
 
+    private static void printList() {
+        System.out.println("\nThe price of the item is based on the ID's prefix. Here the list");
+        System.out.println("A: RM 70\nB: RM 55\nC: RM 35\nD: RM 20");
+        System.out.println("The format should [category:3 digit code]");
+        System.out.println("e.g. A231 or C213\n");
+    }
+
+    private static String generateReciept(String name, boolean isMember, String[] items) {
+        String reciept = "Reciept for " + name + ": \n";
+
+        for (int i = 0; i < items.length; i++) {
+            String currentItem = items[i];
+            String id = currentItem.split(" ")[0].replace("[", "").replace("]", "");
+            double price = getItemPrice(id);
+            reciept += String.format("%s: %.2f%n", currentItem, price);
+        }
+
+        double totalPrice = calcTotalPrice(items, false);
+        double finalPrice = totalPrice - (totalPrice * discount(totalPrice, isMember));
+        reciept += String.format("Total Price: RM %.2f%n", finalPrice);
+        reciept += "\n";
+
+        return reciept;
+    }
+
     private static double discount(double totalPrice, boolean isMember) {
-
-        // if (isMember) {
-
-        // }
-
-        double discountPercent = 0;
+        double discountPercent;
 
         if (totalPrice >= 200) {
             if (isMember) {
-                discountPercent = .1;
+                discountPercent = 0.1;
+            } else {
+                discountPercent = 0;
             }
         } else if (totalPrice >= 100) {
             if (isMember) {
-                discountPercent = .05;
+                discountPercent = 0.05;
+            } else {
+                discountPercent = 0;
             }
         } else {
             discountPercent = 0;
@@ -76,34 +95,40 @@ public class Main {
         return discountPercent;
     }
 
-    private static double calcTotalPrice(String[] items) {
+    private static double calcTotalPrice(String[] items, boolean printList) {
         double totalPrice = 0;
         for (int i = 0; i < items.length; i++) {
-            double price = 0;
             String currentItem = items[i];
             String id = currentItem.split(" ")[0].replace("[", "").replace("]", "");
             id = id.toLowerCase();
 
-            if (id.startsWith("a")) {
-                price = 70.0;
-            } else if (id.startsWith("b")) {
-                price = 55.0;
-            } else if (id.startsWith("c")) {
-                price = 35.0;
-            } else if (id.startsWith("d")) {
-                price = 20.0;
-            }
+            double price = getItemPrice(id);
             totalPrice += price;
 
-            System.out.printf("%s: %.2f%n", currentItem, price);
+            if (printList) {
+                System.out.printf("%s: %.2f%n", currentItem, price);
+            }
         }
 
         return totalPrice;
     }
 
-    // private static String getMember(String name) {
+    private static double getItemPrice(String id) {
+        double price = 0;
+        id = id.toLowerCase();
 
-    // }
+        if (id.startsWith("a")) {
+            price = 70.0;
+        } else if (id.startsWith("b")) {
+            price = 55.0;
+        } else if (id.startsWith("c")) {
+            price = 35.0;
+        } else if (id.startsWith("d")) {
+            price = 20.0;
+        }
+
+        return price;
+    }
 
     private static void saveToFile(String filePath, List<String> data) {
         try {
@@ -121,6 +146,11 @@ public class Main {
 
     public static void readFile(String fileName, List<String> list) {
         try {
+            File file = new File(fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
             BufferedReader br = new BufferedReader(new FileReader(fileName));
             String line;
             while ((line = br.readLine()) != null) {
@@ -131,7 +161,6 @@ public class Main {
             e.printStackTrace();
             System.exit(1);
         }
-
     }
 
 }
